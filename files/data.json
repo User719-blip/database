@@ -1,0 +1,5 @@
+{
+   "name" : "string",
+   "city" : "string",
+   "age"  : "int"
+}
