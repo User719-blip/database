@@ -8,4 +8,8 @@
 
 void insert(std::map<std::string, std::string>& umap);
 
+bool check(std::map<std::string,std::string> &umap , std::map<std::string,std::string> &data);
+
+//#include "../src/read.cpp"
+
 #endif 
