@@ -13,25 +13,6 @@ int main()
     map<string , string> umap;
     insert(umap);
     
-    // Read JSON file
-    ifstream inputFile("./files/data.json");
-    if (!inputFile.is_open()) {
-        cerr << "Unable to open file" << endl;
-        return 1;
-    }
-
-    stringstream buffer;
-    buffer << inputFile.rdbuf();
-    string jsonStr = buffer.str();
-    inputFile.close();
-
-    // Parse JSON and store in unordered map
-    map<string, string> data = parseJson(jsonStr);
-
-    // Print the data from the unordered map
-    for (const auto &pair : data) {
-        cout << pair.first << ": " << pair.second << endl;
-    }
 
     Node* root = nullptr;
     root = insert(root, 50);

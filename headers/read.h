@@ -6,7 +6,7 @@
 #include <map>
 #include <string>
 
-void insert(std::map<std::string, std::string>& umap);
+void insert(std::map<std::string, std::string>& umap ,  const std::map<std::string, std::string>& keys);
 
 bool check(std::map<std::string,std::string> &umap , std::map<std::string,std::string> &data);
 
