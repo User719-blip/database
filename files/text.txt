@@ -1,0 +1,12 @@
+--- Hash Map 1 ---
+age 21
+name Abhay
+
+--- Hash Map 2 ---
+age 22
+name Aryan
+
+--- Hash Map 3 ---
+age 23
+name Shubham
+

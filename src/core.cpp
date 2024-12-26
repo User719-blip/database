@@ -9,7 +9,7 @@ struct BSTNode //
     std::unique_ptr<BSTNode> left;
     std::unique_ptr<BSTNode> right;
 
-    BSTNode(int k, std::map<std::string, std::string>& m) : key(k), map(m) {} //rmenoving reffrencve from here *m to &m
+    BSTNode(int k, std::map<std::string, std::string>& m) : key(k), map(m) {} //removing reffrencve from here *m to &m
 };
 
 void insertNode(std::unique_ptr<BSTNode>& root, int key, std::map<std::string, std::string>& map) //removing reffrence from here *map to &map
@@ -140,4 +140,39 @@ std::unique_ptr<BSTNode> deleteNode(std::unique_ptr<BSTNode>& root, int key)
     }
 
     return std::move(root);
+}
+
+std::map<std::string, std::string>* search_map(const std::unique_ptr<BSTNode>& root, int key) 
+{
+    if (!root) 
+    {
+        return nullptr; // Key not found
+    }
+
+    if (root->key == key) 
+    {
+        std::string field;
+        std::cout << "Enter a field to search: ";
+        std::cin >> field;
+
+        auto it = root->map.find(field);
+        if (it != root->map.end()) 
+        {
+            std::cout << "Field found: " << it->first << " -> " << it->second << std::endl;
+            return &(root->map); // Return pointer to the map
+        } 
+        else 
+        {
+            std::cout << "Field not found in the map." << std::endl;
+        }
+        return nullptr;
+    } 
+    else if (key < root->key) 
+    {
+        return search(root->left, key); // Search in the left subtree
+    } 
+    else 
+    {
+        return search(root->right, key); // Search in the right subtree
+    }
 }
