@@ -1,4 +1,4 @@
-g++ tests/json.test.cpp src/read.cpp src/schema.cpp -o out/json.test
+g++ src/main.cpp src/read.cpp src/schema.cpp -o out/json.test.exe
 ./out/json.test.exe
 
 

@@ -1,12 +1,16 @@
---- Hash Map 1 ---
+-- schema --
+age int
+name string
+
+-- Hash Map 1 --
 age 21
 name Abhay
 
---- Hash Map 2 ---
+-- Hash Map 2 --
 age 22
 name Aryan
 
---- Hash Map 3 ---
+-- Hash Map 3 --
 age 23
 name Shubham
 
