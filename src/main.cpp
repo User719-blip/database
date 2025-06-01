@@ -1,5 +1,4 @@
 #include "../headers/read.h"
-#include "../headers/create.h"
 #include "../src/core.cpp"
 #include <iostream>
 #include <fstream>
@@ -10,31 +9,32 @@
 
 using namespace std;
 
-//
-//modify main fun for effciency  
+//modify the commit function to take bst as an args  
+//add hashing to text file
+//improve structure of the code
 int main()
 {
     unique_ptr<BSTNode> root = nullptr;
 
-    map<string, string> result;
-    result["age"] = "int";
-    result["name"] = "string";
+    // map<string, string> result;
+    // result["age"] = "int";
+    // result["name"] = "string";
 
-    map<string, string> umap1, umap2, umap3;
-    umap1["age"] = "21";
-    umap1["name"] = "Abhay";
+    // map<string, string> umap1, umap2, umap3;
+    // umap1["age"] = "21";
+    // umap1["name"] = "Abhay";
 
-    umap2["age"] = "22";
-    umap2["name"] = "Aryan";
+    // umap2["age"] = "22";
+    // umap2["name"] = "Aryan";
 
-    umap3["age"] = "23";
-    umap3["name"] = "Shubham";
-    // map<string, string> result = create();
-    // map<string, string> umap1 , umap2 , umap3;
+    // umap3["age"] = "23";
+    // umap3["name"] = "Shubham";
+    map<string, string> result = create();
+    map<string, string> umap1 , umap2 , umap3;
 
-    // insert(umap1 , result);
-    // insert(umap2 , result);
-    // insert(umap3 , result);
+    insert(umap1 , result);
+    insert(umap2 , result);
+    insert(umap3 , result);
     
     
     insertNode(result,root, 10, umap1);
@@ -74,7 +74,7 @@ int main()
     std::vector<std::map<std::string, std::string>> hashmaps = {umap1, umap2, umap3};
     
     string filename = "files/text.txt";
-    commit(filename,result ,hashmaps);
+    commit(filename,result , root);
     retrieve(filename,result,root);
     
     inorder(root);

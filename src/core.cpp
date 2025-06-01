@@ -3,15 +3,15 @@
 #include <memory>
 #include "../headers/read.h"
 
-struct BSTNode //
-{
-    int key;
-    std::map<std::string, std::string> map;
-    std::unique_ptr<BSTNode> left;
-    std::unique_ptr<BSTNode> right;
+// struct BSTNode //
+// {
+//     int key;
+//     std::map<std::string, std::string> map;
+//     std::unique_ptr<BSTNode> left;
+//     std::unique_ptr<BSTNode> right;
 
-    BSTNode(int k, std::map<std::string, std::string>& m) : key(k), map(m) {} //removing reffrencve from here *m to &m
-};
+//     BSTNode(int k, std::map<std::string, std::string>& m) : key(k), map(m) {} //removing reffrencve from here *m to &m
+// };
 
 void insertNode(std::map<std::string , std::string>result,std::unique_ptr<BSTNode>& root, int key, std::map<std::string, std::string>& map) //removing reffrence from here *map to &map
 {
@@ -43,11 +43,11 @@ void insertNode(std::map<std::string , std::string>result,std::unique_ptr<BSTNod
 
     if (key < root->key) 
     {
-        insertNode(result,root->left, key, map);
+        insertNode(result, root->left, key, map);
     } 
     else if (key > root->key) 
     {
-        insertNode(result,root->right, key, map);
+        insertNode(result, root->right, key, map);
     } 
     else 
     {

@@ -3,6 +3,20 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <sstream> // for std::istringstream
+#include <functional> //for std function u
+#include <memory> // for std::unique_ptr
+#include "../headers/read.h"
+// Forward declaration of BSTNode
+// struct BSTNode //
+// {
+//     int key;
+//     std::map<std::string, std::string> map;
+//     std::unique_ptr<BSTNode> left;
+//     std::unique_ptr<BSTNode> right;
+
+//     BSTNode(int k, std::map<std::string, std::string>& m) : key(k), map(m) {} //removing reffrencve from here *m to &m
+// };
 
 // void commit(const std::string& filename, const std::vector<std::map<std::string, std::string>>& maps)
 // {
@@ -34,10 +48,10 @@
 
 void commit(const std::string& filename,
             const std::map<std::string, std::string>& schemaMap,
-            const std::vector<std::map<std::string, std::string>>& userMaps)
+            const std::unique_ptr<BSTNode>& root)
 {
     std::ofstream file(filename, std::ios::out | std::ios::trunc);
-    if (!file.is_open()) 
+    if (!file.is_open())
     {
         std::cerr << "Error: Unable to open file.\n";
         return;
@@ -45,32 +59,40 @@ void commit(const std::string& filename,
 
     // Write schema section
     file << "-- schema --\n";
-    for (const auto& pair : schemaMap) 
+    for (const auto& pair : schemaMap)
     {
         file << pair.first << " " << pair.second << "\n";
     }
     file << "\n";
 
-    // Write each user map
-    for (size_t i = 0; i < userMaps.size(); ++i) 
+    // Helper lambda for in-order traversal and writing maps
+    std::function<void(const std::unique_ptr<BSTNode>&, int&)> inorderWrite;
+    inorderWrite = [&](const std::unique_ptr<BSTNode>& node, int& counter)
     {
-        file << "-- Hash Map " << i + 1 << " --\n";
-        for (const auto& pair : userMaps[i]) 
+        if (!node) return;
+        inorderWrite(node->left, counter);
+
+        file << "-- Hash Map " << ++counter << " --\n";
+        file << "Key: " << node->key << "\n";
+        for (const auto& pair : node->map)
         {
             file << pair.first << " " << pair.second << "\n";
         }
         file << "\n";
-    }
+
+        inorderWrite(node->right, counter);
+    };
+
+    int counter = 0;
+    inorderWrite(root, counter);
 
     file.close();
-    std::cout << "Schema and hash maps saved successfully.\n";
+    std::cout << "Schema and BST hash maps saved successfully.\n";
 }
 
 
 
-void retrieve(const std::string& filename,
-              std::map<std::string, std::string>& schemaMap,
-              std::unique_ptr<BSTNode>& root)
+void retrieve(const std::string& filename,std::map<std::string, std::string>& schemaMap,std::unique_ptr<BSTNode>& root)
 {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -94,7 +116,8 @@ void retrieve(const std::string& filename,
         }
         else if (line.find("-- Hash Map") != std::string::npos) {
             if (!currentMap.empty()) {
-                insertNode(schemaMap, root, mapCounter++, currentMap);
+                insertNode(schemaMap, root, mapCounter, currentMap);
+                ++mapCounter;
                 currentMap.clear();
             }
             readingSchema = false;
