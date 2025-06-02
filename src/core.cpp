@@ -3,6 +3,7 @@
 #include <memory>
 #include "../headers/read.h"
 
+std::unique_ptr<BSTNode> root = nullptr;
 // struct BSTNode //
 // {
 //     int key;
@@ -13,7 +14,8 @@
 //     BSTNode(int k, std::map<std::string, std::string>& m) : key(k), map(m) {} //removing reffrencve from here *m to &m
 // };
 
-void insertNode(std::map<std::string , std::string>result,std::unique_ptr<BSTNode>& root, int key, std::map<std::string, std::string>& map) //removing reffrence from here *map to &map
+// key is randome value type int
+void insertNode(std::map<std::string , std::string>result,std::unique_ptr<BSTNode>& root, int key, std::map<std::string, std::string>& map) ///removing reffrence from here *map to &map
 {
     if (key < 0) 
     {
@@ -53,6 +55,7 @@ void insertNode(std::map<std::string , std::string>result,std::unique_ptr<BSTNod
     {
         root->map = map; 
     }
+
 }
 
 void inorder(const std::unique_ptr<BSTNode>& root) 
@@ -70,7 +73,8 @@ void inorder(const std::unique_ptr<BSTNode>& root)
 
     inorder(root->right);
 }
-
+// return pointer to the map
+// use eg std::map<std::string, std::string>* map = search()
 std::map<std::string, std::string>* search(const std::unique_ptr<BSTNode>& root, int key) 
 {
     if (!root) 
@@ -81,7 +85,7 @@ std::map<std::string, std::string>* search(const std::unique_ptr<BSTNode>& root,
 
     if (root->key == key) 
     {
-        std::cout << "Key " << key << " found in the BST. Hash Map:" << std::endl;
+        std::cout << "Key " << key << " found in the BST."<< std::endl << " Hash Map:" << std::endl;
         for (const auto& pair : root->map) 
         {
             std::cout << "  " << pair.first << ": " << pair.second << std::endl;
@@ -99,14 +103,14 @@ std::map<std::string, std::string>* search(const std::unique_ptr<BSTNode>& root,
 }
 
 
-std::map<std::string, std::string> update(std::unique_ptr<BSTNode>& root, int key, std::map<std::string, std::string>& schema)
+void update(std::unique_ptr<BSTNode>& root, int key, std::map<std::string, std::string>& schema)
 {
     // Find the node using search
     std::map<std::string, std::string>* old_data = search(root, key);
     if (!old_data) 
     {
         std::cout << "Key not found in the tree." << std::endl;
-        return {};
+        return;
     }
 
     // Make a copy of the original data
@@ -146,60 +150,70 @@ std::map<std::string, std::string> update(std::unique_ptr<BSTNode>& root, int ke
     {
         std::cout << "Validation failed. Reverting changes.\n";
         *old_data = original_data; // Restore original
-        return original_data;
+        return;
     } 
     else 
     {
         std::cout << "Key " << key << " updated successfully.\n";
-        return new_data;
+        std::cout << "Updated hash map:\n";
+        for (const auto& pair : new_data) 
+        {
+            std::cout << "  " << pair.first << " : " << pair.second << std::endl;
+        }
+        // Call inorder to print the tree after update
+        std::cout << "BST after update:\n";
+        inorder(root);
     }
 }
 
-std::unique_ptr<BSTNode> deleteNode(std::unique_ptr<BSTNode>& root, int key) 
+void deleteNode(std::unique_ptr<BSTNode>& root, int key) 
 {
     if (!root)
     {
         std::cout << "Key not found in the tree." << std::endl;
-        return nullptr;
+        return;
     } 
     
     if (key < root->key) 
     {
-        root->left = deleteNode(root->left, key);
+        deleteNode(root->left, key);
     } 
     else if (key > root->key) 
     {
-        root->right = deleteNode(root->right, key);
+        deleteNode(root->right, key);
     } 
     else 
     {
         // Node with only one child or no child
         if (!root->left) 
         {
-            return std::move(root->right);
+            root = std::move(root->right);
         } 
         else if (!root->right) 
         {
-            return std::move(root->left);
+            root = std::move(root->left);
         }
-
-        // Node with two children: Get the inorder successor (smallest in the right subtree)
-        std::unique_ptr<BSTNode>& minNode = root->right;
-        while (minNode->left) 
+        else 
         {
-            minNode = std::move(minNode->left);
+            // Node with two children: Get the inorder successor (smallest in the right subtree)
+            std::unique_ptr<BSTNode>* minNode = &root->right;
+            while ((*minNode)->left) 
+            {
+                minNode = &((*minNode)->left);
+            }
+
+            root->key = (*minNode)->key;
+            root->map = (*minNode)->map;
+
+            // Delete the inorder successor
+            deleteNode(root->right, (*minNode)->key);
         }
-
-        root->key = minNode->key;
-        root->map = minNode->map;
-
-        // Delete the inorder successor
-        root->right = deleteNode(root->right, minNode->key);
     }
 
-    return std::move(root);
+    // Print the tree after deletion
+    std::cout << "BST after deletion:\n";
+    inorder(root);
 }
-
 std::map<std::string, std::string>* search_map(const std::unique_ptr<BSTNode>& root, int key) 
 {
     if (!root) 

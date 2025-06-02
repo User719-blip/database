@@ -46,10 +46,22 @@
 //     }
 // }
 
+void purge(const std::string& filename)
+{
+    std::ofstream file(filename, std::ios::trunc);
+    if (!file.is_open()) {
+        std::cerr << "Error: Unable to open file for purging.\n";
+        return;
+    }
+    file.close();
+    std::cout << "All records purged from " << filename << std::endl;
+}
+
 void commit(const std::string& filename,
             const std::map<std::string, std::string>& schemaMap,
             const std::unique_ptr<BSTNode>& root)
 {
+    std::cout << "Commiting changes to file" << std::endl;
     std::ofstream file(filename, std::ios::out | std::ios::trunc);
     if (!file.is_open())
     {
@@ -73,7 +85,7 @@ void commit(const std::string& filename,
         inorderWrite(node->left, counter);
 
         file << "-- Hash Map " << ++counter << " --\n";
-        file << "Key: " << node->key << "\n";
+        // Removed: file << "Key: " << node->key << "\n";
         for (const auto& pair : node->map)
         {
             file << pair.first << " " << pair.second << "\n";
@@ -92,8 +104,9 @@ void commit(const std::string& filename,
 
 
 
-void retrieve(const std::string& filename,std::map<std::string, std::string>& schemaMap,std::unique_ptr<BSTNode>& root)
+void retrieve(const std::string& filename, std::unique_ptr<BSTNode>& root)
 {
+    std::cout << "Retrirving data " << std::endl ;
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Error: Cannot open file for reading.\n";
@@ -101,7 +114,8 @@ void retrieve(const std::string& filename,std::map<std::string, std::string>& sc
     }
 
     std::string line;
-    std::map<std::string, std::string> currentMap;
+    std::map<std::string, std::string> result;      // This will hold the schema
+    std::map<std::string, std::string> currentMap;  // This will hold each user map
     bool readingSchema = false;
     bool readingUserMap = false;
     int mapCounter = 0;
@@ -116,7 +130,7 @@ void retrieve(const std::string& filename,std::map<std::string, std::string>& sc
         }
         else if (line.find("-- Hash Map") != std::string::npos) {
             if (!currentMap.empty()) {
-                insertNode(schemaMap, root, mapCounter, currentMap);
+                insertNode(result, root, mapCounter, currentMap);
                 ++mapCounter;
                 currentMap.clear();
             }
@@ -132,7 +146,7 @@ void retrieve(const std::string& filename,std::map<std::string, std::string>& sc
         if (!value.empty() && value[0] == ' ') value.erase(0, 1);
 
         if (readingSchema) {
-            schemaMap[key] = value;
+            result[key] = value;
         } else if (readingUserMap) {
             currentMap[key] = value;
         }
@@ -140,8 +154,9 @@ void retrieve(const std::string& filename,std::map<std::string, std::string>& sc
 
     // Insert the last map if any
     if (!currentMap.empty()) {
-        insertNode(schemaMap, root, mapCounter++, currentMap);
+        insertNode(result, root, mapCounter++, currentMap);
     }
 
     file.close();
+    std::cout << "call inorder function to see data" << std::endl ;
 }

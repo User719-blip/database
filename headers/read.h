@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include <memory> 
+
 struct BSTNode //
 {
     int key;
@@ -16,9 +17,12 @@ struct BSTNode //
     BSTNode(int k, std::map<std::string, std::string>& m) : key(k), map(m) {} //removing reffrencve from here *m to &m
 };
 
-void insert(std::map<std::string, std::string>& umap ,  const std::map<std::string, std::string>& keys);
+extern std::unique_ptr<BSTNode> root;
 
-bool check(std::map<std::string,std::string> &umap , std::map<std::string,std::string> &data);
+
+void insert(std::map<std::string, std::string>& umap ,   std::map<std::string, std::string>& keys);
+
+bool check(const std::map<std::string,std::string> &umap , const std::map<std::string,std::string> &data);
 
 void insertNode(std::map<std::string , std::string>result,std::unique_ptr<BSTNode>& root, int key, std::map<std::string, std::string>& map); //removing reffrence from here *map to &map
 
@@ -28,13 +32,15 @@ void inorder(const std::unique_ptr<BSTNode>& root) ;
 
 std::map<std::string, std::string>* search(const std::unique_ptr<BSTNode>& root, int key) ;
 
-std::map<std::string, std::string> update(std::unique_ptr<BSTNode>& root, int key, std::map<std::string, std::string>& schema);
-//#include "../src/read.cpp"
-std::unique_ptr<BSTNode> deleteNode(std::unique_ptr<BSTNode>& root, int key) ;
+void update(std::unique_ptr<BSTNode>& root, int key, std::map<std::string, std::string>& schema);
+
+void purge(const std::string& filename);
+
+void deleteNode(std::unique_ptr<BSTNode>& root, int key) ;
 
 std::map<std::string, std::string>* search_map(const std::unique_ptr<BSTNode>& root, int key) ;
 
 void commit(const std::string& filename,const std::map<std::string, std::string>& schemaMap,const std::unique_ptr<BSTNode>& root);
 
-void retrieve(const std::string& filename,std::map<std::string, std::string>& schemaMap,std::unique_ptr<BSTNode>& root);
+void retrieve(const std::string& filename,std::unique_ptr<BSTNode>& root);
 #endif 
