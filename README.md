@@ -94,6 +94,11 @@ name Aryan
 - Implement undo/redo and backup/restore features.
 - Add unit tests and better error handling.
 
+## For testers 
+- for testing run 
+```
+./scripts/setup_example.sh
+```
 ## License
 
 This project is for educational purposes.
